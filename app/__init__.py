@@ -1,19 +1,16 @@
-from flask import (
-    Flask,
-    request,
-    jsonify
-)
-
-from .models import db, setup_db, Usuario, Receta, Cajero, Delivery
+from flask import Flask, request, jsonify
 from flask_cors import CORS
+from .models import db, setup_db, Usuario, Receta, Cajero, Delivery
 from utilities.utils import allowed_file
 
 import os
 import sys
 
-
 app = Flask(__name__)
 setup_db(app)
+
+# Habilitar CORS
+CORS(app)
 
 # Definir los endpoints para cada clase
 

@@ -1,6 +1,7 @@
 from datetime import datetime
 import uuid
 from flask_sqlalchemy import SQLAlchemy
+
 config = {
     'DATABASE_URI': 'postgresql://postgres:1234@localhost:5432/christian',
 }
@@ -14,7 +15,8 @@ def setup_db(app, database_path=database_uri):
     app.config["SQLALCHEMY_DATABASE_URI"] = database_path
     db.app = app
     db.init_app(app)
-    db.create_all()
+    with app.app_context():
+        db.create_all()
 
 
 class Usuario(db.Model):
@@ -148,8 +150,8 @@ class Delivery(db.Model):
     vehiculo = db.Column(db.String(100), nullable=False)
     placa = db.Column(db.String(20), nullable=False)
     metodo_pago = db.Column(db.String(50), nullable=False)
-    hora_entrega = db.Column(db.DateTime(timezone=True), nullable=True,
-                             onupdate=datetime.utcnow, server_default=db.text('now()'))
+    hora_entrega = db.Column(db.DateTime(timezone=True), nullable=True, onupdate=datetime.utcnow,
+                             server_default=db.text('now()'))
     image_pedido = db.Column(db.String(500), nullable=True)
 
     def __init__(self, direccion, vehiculo, placa, metodo_pago, hora_entrega, image_pedido=None):
