@@ -27,8 +27,7 @@ class Usuario(db.Model):
     rol = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     contrasena = db.Column(db.String(80), nullable=False)
-    sexo = db.Column(Enum('Masculino', 'Femenino',
-                     name='sexo_types'), nullable=False)
+    sexo = db.Column(db.String(50), nullable=False)
     telefono = db.Column(db.String(20), nullable=False)
 
     def __init__(self, nombre, apellido, rol, contrasena, sexo, fecha_nacimiento, telefono, email):
@@ -36,7 +35,7 @@ class Usuario(db.Model):
         self.apellido = apellido
         self.rol = rol
         self.contrasena = contrasena
-        self.sexo = sexo
+        self.sexo = sexo if sexo in ['Masculino', 'Femenino'] else None
         self.fecha_nacimiento = fecha_nacimiento
         self.telefono = telefono
         self.email = email
