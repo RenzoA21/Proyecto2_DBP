@@ -29,6 +29,19 @@ class Tests(unittest.TestCase):
         self.assertIsNotNone(data['id'])
         self.assertEqual(data['message'], 'Receta created successfully')
 
+    def test_create_tienda_missing_fields(self):
+        response = self.client.post('/recetas', json={'medicamento': 'Ibuprofeno',
+                                                      'tipo_de_toma': 'Oral',
+                                                      'cantidad': 1,
+                                                      'unidad_medida': 'tableta',
+                                                      'porcentaje': 5.0})
+        data = response.get_json()
+
+        self.assertEqual(response.status_code, 400)
+        self.assertFalse(data['success'])
+        self.assertEqual(data['message'], 'Error creating Receta')
+        self.assertIn('ml_g is required', data['errors'])
+
     def test_get_recetas(self):
         response = self.client.get('/recetas')
         data = response.get_json()
