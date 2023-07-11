@@ -1,6 +1,8 @@
 from datetime import datetime
 import uuid
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, check_password_hash
+import sys
 
 config = {
     'DATABASE_URI': 'postgresql://postgres:1234@localhost:5432/christian',
@@ -22,21 +24,20 @@ def setup_db(app, database_path=database_uri):
 class Usuario(db.Model):
     __tablename__ = 'usuarios'
 
-    id = db.Column(db.Integer, primary_key=True)
-    nombre = db.Column(db.String(50), nullable=False)
-    apellido = db.Column(db.String(50), nullable=False)
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(
+        uuid.uuid4()), server_default=db.text('uuid_generate_v4()'))
+    nombre = db.Column(db.String(50), unique=True, nullable=False)
+    apellido = db.Column(db.String(50), unique=True, nullable=False)
     fecha_nacimiento = db.Column(db.Date, nullable=False)
-    rol = db.Column(db.String(50), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    contrasena = db.Column(db.String(80), nullable=False)
+    password_hash = db.Column(db.String(400), nullable=False)
     sexo = db.Column(db.String(50), nullable=False)
     telefono = db.Column(db.String(20), nullable=False)
 
-    def __init__(self, nombre, apellido, rol, contrasena, sexo, fecha_nacimiento, telefono, email):
+    def __init__(self, nombre, apellido, password_hash, sexo, fecha_nacimiento, telefono, email):
         self.nombre = nombre
         self.apellido = apellido
-        self.rol = rol
-        self.contrasena = contrasena
+        self.password_hash = password_hash
         self.sexo = sexo if sexo in ['Masculino', 'Femenino'] else None
         self.fecha_nacimiento = fecha_nacimiento
         self.telefono = telefono
@@ -47,8 +48,7 @@ class Usuario(db.Model):
             'id': self.id,
             'nombre': self.nombre,
             'apellido': self.apellido,
-            'rol': self.rol,
-            'contrasena': self.contrasena,
+            'password_hash': self.password_hash,
             'sexo': self.sexo,
             'fecha_nacimiento': self.fecha_nacimiento.isoformat(),
             'telefono': self.telefono,
@@ -56,25 +56,41 @@ class Usuario(db.Model):
         }
 
     @property
-    def is_active(self):
-        # Los usuarios de la base de datos están siempre activos.
-        return True
+    def password(self):
+        raise AttributeError('Passwor is not a readable attribute')
 
-    @property
-    def is_authenticated(self):
-        # Suponemos que todos los usuarios que se han creado están autenticados.
-        return True
+    @password.setter
+    def password(self, password):
+        self.password_hash = generate_password_hash(password)
 
-    @property
-    def is_anonymous(self):
-        # Todos los usuarios de nuestra base de datos no son anónimos.
-        return False
+    def verify_password(self, password):
+        return check_password_hash(self.password_hash, password)
 
-    def get_id(self):
-        # Flask-Login necesita este método para devolver una identificación única para el usuario
-        # (como una cadena), que puede usar para cargar el objeto Usuario en futuras solicitudes.
-        # Generalmente, puedes simplemente devolver la id del usuario.
-        return str(self.id)
+    def __repr__(self):
+        return f'<User{self.id} - {self.nombre}-{self.apellido}>'
+
+        def insert(self):
+            try:
+                db.session.add(self)
+                db.session.commit()
+                user_created_id = self.id
+            except Exception as e:
+                print(sys.exc_info())
+                print('e: ', e)
+                db.session.rollback()
+            finally:
+                db.session.close()
+
+            return user_created_id
+
+    def delete(self):
+        try:
+            db.session.delete(self)
+            db.session.commit()
+        except Exception as e:
+            print(sys.exc_info())
+            print('e: ', e)
+            db.session.rollback()
 
 
 class Receta(db.Model):
