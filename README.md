@@ -16,6 +16,7 @@ Es una aplicacion web de una farmacia que busca administrar los negocios del loc
 
 ## Diagrama de flujo
 
+<img width="490" alt="Screenshot 2023-07-11 at 16 29 53" src="https://github.com/RenzoA21/Proyecto2_DBP/assets/85076359/564ea6ac-eedc-4d98-bedd-997fb1d060f5">
 
 
 ### Componentes
