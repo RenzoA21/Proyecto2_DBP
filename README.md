@@ -33,5 +33,5 @@ Es una aplicacion web de una farmacia que busca administrar los negocios del loc
 
 ### API externo
 
--En el caso de nuestro proyecto utilizamos un API externo de Visa par apoder validar los numeros de tarjeta ingresados al momento de realizar el pago 
+-En el caso de nuestro proyecto utilizamos un API externo de Visa para apoder validar los numeros de tarjeta ingresados al momento de realizar el pago 
 
