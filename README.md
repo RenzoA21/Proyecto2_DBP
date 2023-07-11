@@ -24,12 +24,12 @@ Es una aplicacion web de una farmacia que busca administrar los negocios del loc
 
 ### Vistas
 
--App.vue
--LoginView.vue
--RecetaView.vue
--DeliveryView.vue
--PagoReceta.vue
--PagoDelivery.vue
+- App.vue
+- LoginView.vue
+- RecetaView.vue
+- DeliveryView.vue
+- PagoReceta.vue
+- PagoDelivery.vue
 
 ### API externo
 
