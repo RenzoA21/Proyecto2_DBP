@@ -1,6 +1,6 @@
 import json
 import unittest
-from datetime import datetime
+from datetime import date
 from app.models import Usuario, Receta, Cajero, Delivery
 from app import create_app
 config = {
