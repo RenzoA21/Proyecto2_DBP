@@ -127,6 +127,7 @@ class Tests(unittest.TestCase):
         self.assertEqual(data['total'], len(data['deliveries']))
 
     def test_login_success(self):
+
         response = self.client.post("/sessiones", json={
             "username": "test",
             "password": "test"

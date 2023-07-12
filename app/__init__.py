@@ -276,8 +276,9 @@ def create_app(test_config=None):
                             'total': len(deliveries)
                             }), 200
 
-    @users_bp.route("/sessiones", methods=["POST"])
+    @app.route("/sessiones", methods=["POST"])
     def login():
+
         username = request.json.get("username", None)
         password = request.json.get("password", None)
 
@@ -290,26 +291,5 @@ def create_app(test_config=None):
     @users_bp.route('/api/signin', methods=['POST'])
     def login():
         pass
-
-    @users_bp.route('/usuarios/<usuario_id>', methods=['DELETE'])
-    def delete_user(usuario_id):
-        returned_code = 200
-
-        try:
-            user = Usuario.query.get(usuario_id)
-            if user is None:
-                returned_code = 404
-
-            user.delete()
-        except Exception as e:
-            print('e:', e)
-            returned_code = 500
-
-        if returned_code != 200:
-            abort(returned_code)
-        else:
-            return jsonify({
-                'success': True
-            }), returned_code
 
     return app
