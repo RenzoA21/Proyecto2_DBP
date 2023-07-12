@@ -38,14 +38,13 @@ Es una aplicacion web de una farmacia que busca administrar los negocios del loc
 
 ### Componentes
 
-
+- LoginView.vue
+- RecetaView.vue
+- DeliveryView.vue
 
 ### Vistas
 
 - App.vue
-- LoginView.vue
-- RecetaView.vue
-- DeliveryView.vue
 - PagoReceta.vue
 - PagoDelivery.vue
 
