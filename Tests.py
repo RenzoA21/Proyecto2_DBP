@@ -125,3 +125,19 @@ class Tests(unittest.TestCase):
         self.assertTrue(data['success'])
         self.assertIsInstance(data['deliveries'], list)
         self.assertEqual(data['total'], len(data['deliveries']))
+
+    def test_login_success(self):
+        response = self.client.post("/sessiones", json={
+            "username": "test",
+            "password": "test"
+        })
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.json, {"msg": "credenciales correctas"})
+
+    def test_login_failure(self):
+        response = self.client.post("/sessiones", json={
+            "username": "wrong",
+            "password": "wrong"
+        })
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.json, {"msg": "Credenciales incorrectas"})

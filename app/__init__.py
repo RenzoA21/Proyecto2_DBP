@@ -276,74 +276,16 @@ def create_app(test_config=None):
                             'total': len(deliveries)
                             }), 200
 
-    @users_bp.route('/usuarios', methods=['POST'])
-    def create_user():
-        error_lists = []
-        returned_code = 201
-        try:
-            body = request.get_json()
+    @users_bp.route("/sessiones", methods=["POST"])
+    def login():
+        username = request.json.get("username", None)
+        password = request.json.get("password", None)
 
-            if 'nombre' not in body:
-                error_lists.append('nombre is required')
-            else:
-                nombre = body.get('nombre')
+        # Aquí deberías verificar las credenciales con tu base de datos
+        if username != "test" or password != "test":
+            return jsonify({"msg": "Credenciales incorrectas"}), 401
 
-            if 'password_hash' not in body:
-                error_lists.append('password_hash is required')
-            else:
-                password_hash = body.get('password_hash')
-
-            if 'email' not in body:
-                error_lists.append('email is required')
-            else:
-                email = body.get('email')
-
-            user_db = Usuario.query.filter_by(nombre=nombre).first()
-
-            if user_db is not None:
-                if user_db.nombre == nombre:
-                    error_lists.append(
-                        'An account with this username already exists')
-            else:
-                if len(password_hash) < 8:
-                    error_lists.append(
-                        'Password must have at least 8 characters')
-
-            if len(error_lists) > 0:
-                returned_code = 400
-            else:
-                user = Usuario(
-                    nombre=nombre, password_hash=password_hash, email=email)
-                user.insert()
-                user_created_id = user.id
-
-                token = jwt.encode(
-                    {
-                        'user_created_id': user_created_id,
-                        'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30)
-                    },
-                    config['SECRET_KEY'],
-                    config['ALGORITHM']
-                )
-
-        except Exception as e:
-            print('e:', e)
-            returned_code = 500
-
-        if returned_code == 400:
-            return jsonify({
-                'success': False,
-                'errors': error_lists,
-                'message': 'Error creating a new user'
-            }), returned_code
-        elif returned_code != 201:
-            abort(returned_code)
-        else:
-            return jsonify({
-                'success': True,
-                'token': token,
-                'user_created_id': user_created_id
-            }), returned_code
+        return jsonify({"msg": "credenciales correctas"}), 401
 
     @users_bp.route('/api/signin', methods=['POST'])
     def login():
