@@ -1,19 +1,54 @@
 <template>
   <div class="form-container">
     <h1>Por favor ingresa los datos de la receta</h1>
-    <form>
-      <input type="text" placeholder="Tipo" />
-      <input type="text" placeholder="Medida" />
-      <input type="text" placeholder="Unidad de medida" />
-      <input type="text" placeholder="Cantidad" />
+    <form @submit.prevent="submitForm">
+      <input type="text" v-model="medicamento" placeholder="medicamento" />
+      <input type="text" v-model="tipo_de_toma" placeholder="tipo_de_toma" />
+      <input type="text" v-model="cantidad" placeholder="cantidad" />
+      <input type="text" v-model="unidad_medida" placeholder="unidad_medida" />
+      <input type="text" v-model="porcentaje" placeholder="porcentaje" />
+      <input type="text" v-model="ml_g" placeholder="ml_g" />
       <button type="submit">Enviar</button>
     </form>
   </div>
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "RecetaView",
+  data() {
+    return {
+      medicamento: "",
+      tipo_de_toma: "",
+      cantidad: "",
+      unidad_medida: "",
+      porcentaje: "",
+      ml_g: "",
+    };
+  },
+  methods: {
+    async submitForm() {
+      try {
+        const response = await axios.post("http://127.0.0.1:5002/", {
+          medicamento: this.medicamento,
+          tipo_de_toma: this.tipo_de_toma,
+          cantidad: this.cantidad,
+          unidad_medida: this.unidad_medida,
+          porcentaje: this.porcentaje,
+          ml_g: this.ml_g,
+        });
+        if (response.data.msg === "credenciales correctas") {
+          this.$router.push("/home");
+        } else {
+          console.log("Error de inicio de sesión: ", response.data.msg);
+        }
+      } catch (error) {
+        console.error("Ocurrió un error:", error);
+      }
+    },
+  },
 };
 </script>
 
