@@ -13,8 +13,39 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
-  name: "RecetaView",
+  name: "DeliveryView",
+  data() {
+    return {
+      direccion: "",
+      metodo_de_pago: "",
+      nombre_completo: "",
+      numero_de_tarjeta: "",
+      cvc: "",
+    };
+  },
+  methods: {
+    async submitForm() {
+      try {
+        const response = await axios.post("http://127.0.0.1:5002", {
+          direccion: this.direccion,
+          metodo_de_pago: this.metodo_de_pago,
+          nombre_completo: this.nombre_completo,
+          numero_de_tarjeta: this.numero_de_tarjeta,
+          cvc: this.cvc,
+        });
+        if (response.data.msg === "datos correctos") {
+          this.$router.push("/home");
+        } else {
+          console.log("datos incorrectos: ", response.data.msg);
+        }
+      } catch (error) {
+        console.error("Ocurrió un error:", error);
+      }
+    },
+  },
 };
 </script>
 
