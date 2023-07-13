@@ -31,16 +31,17 @@ export default {
   methods: {
     async submitForm() {
       try {
-        const response = await axios.post("/api/login", {
-          email: this.email,
+        const response = await axios.post("http://127.0.0.1:5002", {
+          username: this.email,
           password: this.password,
         });
-
-        window.localStorage.setItem("authToken", response.data.token);
-
-        this.$router.push("/");
+        if (response.data.msg === "credenciales correctas") {
+          this.$router.push("/home");
+        } else {
+          console.log("Error de inicio de sesión: ", response.data.msg);
+        }
       } catch (error) {
-        console.error("An error occurred:", error);
+        console.error("Ocurrió un error:", error);
       }
     },
   },
